@@ -1,0 +1,50 @@
+/* WYGLĄD — kolory marki i font. Jedyne miejsce, gdzie zmienisz zieleń aplikacji (użycie w kodzie: bg-brand, text-brand-ink…). */
+
+@import "tailwindcss";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/800.css";
+
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand: #22dd6a; /* kolor główny: tło intro, przyciski (z czarnym tekstem, kontrast 11.6:1) */
+  --color-brand-dark: #1cc05b; /* najechanie na przycisk */
+  --color-brand-soft: #e8fbef; /* jasne tło banerów i zaznaczeń */
+  --color-brand-strong: #119a4c; /* wypełnienie wykresów (kontrast 3.4:1 do pustych pól) */
+  --color-brand-ink: #0e7a3a; /* zielony tekst na jasnym tle (kontrast 5.4:1) */
+}
+
+/* Animacja nagrody za 100 pkt (components/Celebration.tsx) */
+@theme {
+  --animate-fall: fall 2.6s ease-in forwards;
+  --animate-celebrate: celebrate 3s ease-out forwards; /* napis: wskakuje, chwilę trwa, łagodnie znika */
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(540deg);
+  }
+}
+
+@keyframes celebrate {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  20% {
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.9) translateY(-12px);
+  }
+}
