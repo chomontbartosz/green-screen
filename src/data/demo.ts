@@ -2,6 +2,7 @@
 // Demo celowo pomija fioletowe produkty, żeby od razu pokazać podpowiedź balansu (config/balance.ts).
 
 import { PRODUCE } from '../config/produce'
+import { portionGramsOf } from '../config/scoring'
 import { pastKeys, shiftKey } from '../lib/date'
 import type { Days, Group, Item, Mode } from '../types'
 
@@ -13,7 +14,7 @@ function randomItems(group: Group, min: number, max: number, mode: Mode): Item[]
   return Array.from({ length: random(min, max) }, () => {
     const pool = PRODUCE[group].filter((p) => p.color !== 'purple')
     const { name } = pool[random(0, pool.length - 1)]
-    return mode === 'expert' ? { name, grams: random(5, 15) * 10 } : { name }
+    return mode === 'expert' ? { name, grams: Math.round((portionGramsOf(name) * random(6, 18)) / 10) } : { name }
   })
 }
 

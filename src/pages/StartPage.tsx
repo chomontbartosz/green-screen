@@ -1,17 +1,24 @@
-// Strona „Podsumowanie”: wykresy witamin i minerałów z 7 dni, seria i odznaki, tabela dni z ikonkami.
+// Strona „Start” (pierwszy ekran): wykresy witamin i minerałów z 7 dni, dzisiejszy postęp z przejściem do „Dziś”, tabela dni.
 
-import { Badges } from '../components/Badges'
+import { AccountBanner } from '../components/AccountBanner'
+import type { AuthMode } from '../components/AuthModal'
 import { DaysTable } from '../components/DaysTable'
+import { DemoBanner } from '../components/DemoBanner'
 import { NutrientRings } from '../components/NutrientRings'
+import { TodayProgress } from '../components/TodayProgress'
 import { CHARTS, NUTRITION, nutrientCoverage, type Chart } from '../config/nutrients'
 import { useStore } from '../data/store'
 
-export function SummaryPage({ today }: { today: string }) {
+type Props = { today: string; onAddToday: () => void; onAccount: (mode: AuthMode) => void }
+
+export function StartPage({ today, onAddToday, onAccount }: Props) {
   const { db, mode } = useStore()
   const coverage = nutrientCoverage(db.days, today, mode)
 
   return (
     <div className="space-y-4">
+      <DemoBanner today={today} onImported={() => window.scrollTo(0, 0)} />
+      <AccountBanner today={today} onOpen={onAccount} />
       <section className="rounded-2xl bg-white p-4 shadow-sm">
         <h2 className="font-semibold">Składniki z ostatnich {NUTRITION.windowDays} dni</h2>
         <p className="text-xs text-stone-500">
@@ -29,7 +36,7 @@ export function SummaryPage({ today }: { today: string }) {
           </a>
         </p>
       </section>
-      <Badges today={today} />
+      <TodayProgress today={today} onAdd={onAddToday} />
       <DaysTable today={today} />
     </div>
   )

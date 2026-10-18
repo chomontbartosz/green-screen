@@ -1,13 +1,15 @@
-// Seria dni (zmienia się codziennie) i odznaki (zdobywa się raz na zawsze). Zasady: config/achievements.ts.
+// Seria dni (zmienia się codziennie) i odznaki: wielokrotne z licznikiem ×N, od ostatnio zdobytej. Zasady: config/achievements.ts.
 
 import { Flame, Trophy } from 'lucide-react'
-import { BADGES, STREAK, streakLength } from '../config/achievements'
+import { badgeStatus, STREAK, streakLength } from '../config/achievements'
 import { useStore } from '../data/store'
+import { fromKey } from '../lib/date'
 
 export function Badges({ today }: { today: string }) {
   const { db, mode } = useStore()
   const streak = streakLength(db.days, today, mode)
-  const earned = BADGES.filter((badge) => badge.earned(db.days, mode))
+  const badges = badgeStatus(db.days, mode)
+  const earned = badges.filter((b) => b.count > 0)
 
   return (
     <>
@@ -29,14 +31,22 @@ export function Badges({ today }: { today: string }) {
             <Trophy className="size-5 text-amber-500" aria-hidden /> Odznaki
           </h2>
           <span className="text-sm text-stone-500">
-            {earned.length} / {BADGES.length} zdobyte
+            {earned.length} / {badges.length} zdobyte
           </span>
         </header>
         <ul className="mt-3 grid grid-cols-3 gap-2">
-          {BADGES.map((badge) => {
-            const has = earned.includes(badge)
+          {badges.map((badge) => {
+            const has = badge.count > 0
+            const last = badge.last && fromKey(badge.last).toLocaleDateString('pl-PL', { day: 'numeric', month: 'numeric' })
             return (
-              <li key={badge.name} title={badge.description} className={`rounded-xl p-2 text-center ${has ? 'bg-brand-soft' : 'bg-stone-50 opacity-50 grayscale'}`}>
+              <li
+                key={badge.name}
+                title={last ? `${badge.description} · ostatnio ${last}` : badge.description}
+                className={`relative rounded-xl p-2 text-center ${has ? 'bg-brand-soft' : 'bg-stone-50 opacity-50 grayscale'}`}
+              >
+                {badge.repeatable && badge.count > 1 && (
+                  <span className="absolute top-1 right-1 rounded-full bg-black px-1.5 text-[10px] font-bold text-white">×{badge.count}</span>
+                )}
                 <span className="block text-2xl">{badge.icon}</span>
                 <span className="block text-xs font-semibold">{badge.name}</span>
                 <span className="block text-[10px] leading-tight text-stone-500">{badge.description}</span>

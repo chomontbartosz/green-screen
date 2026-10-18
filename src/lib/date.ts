@@ -12,6 +12,9 @@ export function shiftKey(key: string, delta: number) {
   return toKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + delta))
 }
 
+/** Poniedziałek tygodnia, do którego należy dzień. */
+export const weekStart = (key: string) => shiftKey(key, -((fromKey(key).getDay() + 6) % 7))
+
 /** `count` kolejnych dni wstecz, licząc od `end` włącznie (najnowszy pierwszy). */
 export const pastKeys = (end: string, count: number) => Array.from({ length: count }, (_, i) => shiftKey(end, -i))
 

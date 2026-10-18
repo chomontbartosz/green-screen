@@ -1,8 +1,9 @@
-// Strona „Kalendarz”: miesiąc z podsumowaniem porcji każdego dnia, podgląd i edycja dni z przeszłości.
+// Strona „Kalendarz”: miesiąc z podsumowaniem porcji każdego dnia, sezon w tym miesiącu, podgląd i edycja dni z przeszłości.
 
 import { useState } from 'react'
 import { DayEditor } from '../components/DayEditor'
 import { DaySummary } from '../components/DaySummary'
+import { SeasonCard } from '../components/SeasonCard'
 import { calculateScore, formatPortions, portions, scoreLevel } from '../config/scoring'
 import { useStore } from '../data/store'
 import { formatLong, formatMonth, toKey } from '../lib/date'
@@ -101,6 +102,8 @@ export function CalendarPage({ today }: { today: string }) {
           )}
         </section>
       )}
+
+      <SeasonCard month={month} />
     </div>
   )
 }

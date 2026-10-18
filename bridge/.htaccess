@@ -1,0 +1,11 @@
+# Plik z hasłami nie jest dostępny z przeglądarki (i tak nic by nie wyświetlił, to druga warstwa ochrony).
+# Dwie składnie, bo serwery Apache różnią się wersją.
+<Files "bridge-config.php">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</Files>

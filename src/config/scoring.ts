@@ -2,18 +2,31 @@
 
 import type { DayEntry, Item, Mode } from '../types'
 import { COLOR_ORDER, dayColors } from './balance'
+import { findAny, hasTag } from './produce'
 
 export const SCORING = {
   goal: { vegetables: 5, fruits: 5 }, // dzienny cel porcji
   weights: { vegetables: 35, fruits: 35, colors: 20, variety: 10 }, // suma = 100 pkt, 30 pkt za różnorodność
   varietyGoal: 6, // ile RÓŻNYCH produktów dziennie daje pełne punkty za różnorodność
-  portionGrams: 80, // tryb eksperta: tyle gramów = 1 porcja (garść ≈ 80–100 g)
+  portionGrams: 80, // tryb eksperta: tyle gramów = 1 porcja (garść ≈ 80 g); wyjątki (np. suszone 30 g) w produce.ts
+  legumesMaxPortions: 1, // strączki (fasola, ciecierzyca, soczewica) liczą się maks. 1 porcja dziennie
 }
 
-/** Liczba porcji: w trybie podstawowym 1 pozycja = 1 porcja, w trybie eksperta gramy / 80. */
+/** Ile gramów to 1 porcja danego produktu (zwykle 80 g, suszone owoce 30 g). */
+export const portionGramsOf = (name: string) => findAny(name)?.portionGrams ?? SCORING.portionGrams
+
+/** Porcje jednej pozycji: w trybie podstawowym 1, w trybie eksperta gramy / gramy porcji. */
+export const itemPortions = (item: Item, mode: Mode) => (mode === 'basic' ? 1 : (item.grams ?? portionGramsOf(item.name)) / portionGramsOf(item.name))
+
+/** Nowa pozycja: w trybie eksperta od razu z gramaturą jednej porcji. */
+export const newItem = (name: string, mode: Mode): Item => (mode === 'expert' ? { name, grams: portionGramsOf(name) } : { name })
+
+export const isLegume = (item: Item) => hasTag(item.name, 'strączki')
+
+/** Porcje zaliczone do celu z listy pozycji jednego dnia — strączki najwyżej `legumesMaxPortions`. */
 export function portions(items: Item[], mode: Mode): number {
-  if (mode === 'basic') return items.length
-  return items.reduce((sum, item) => sum + (item.grams ?? SCORING.portionGrams), 0) / SCORING.portionGrams
+  const sum = (list: Item[]) => list.reduce((total, item) => total + itemPortions(item, mode), 0)
+  return sum(items.filter((i) => !isLegume(i))) + Math.min(sum(items.filter(isLegume)), SCORING.legumesMaxPortions)
 }
 
 /** Ile różnych produktów zjedzono danego dnia. */

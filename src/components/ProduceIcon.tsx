@@ -23,10 +23,13 @@ export function ProduceIcon({ group, name, size = 'size-10' }: Props) {
   )
 }
 
-/** Sam obrazek, bez dymka. Pliki w ikonki/ mają duży margines, więc obraz jest powiększony i przycięty. */
+/** Sam obrazek, bez dymka. Pliki w ikonki/ mają duży margines, więc obraz jest powiększony i przycięty.
+ * Własna pozycja albo brak pliku ikony → szare kółko z pierwszą literą. */
 export function ProduceImage({ group, name, size }: Required<Props>) {
   const produce = findProduce(group, name)
-  if (!produce) {
+  const [missing, setMissing] = useState(false)
+
+  if (!produce || missing) {
     return (
       <span className={`${size} @container inline-flex shrink-0 items-center justify-center rounded-full bg-stone-200 font-semibold text-stone-500`}>
         <span className="text-[45cqw]">{name.charAt(0).toUpperCase()}</span>
@@ -35,7 +38,7 @@ export function ProduceImage({ group, name, size }: Required<Props>) {
   }
   return (
     <span className={`${size} inline-block shrink-0 overflow-hidden rounded-full bg-white`}>
-      <img src={`/${produce.icon}`} alt={name} className="size-full scale-[4.2] object-contain" />
+      <img src={`/${produce.icon}`} alt={name} onError={() => setMissing(true)} className="size-full scale-[4.2] object-contain" />
     </span>
   )
 }

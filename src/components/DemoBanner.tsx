@@ -1,4 +1,4 @@
-// Baner na ekranie „Dziś” przy pierwszym uruchomieniu: propozycja importu danych demo (teksty: config/texts.ts).
+// Baner na ekranie „Start” przy pierwszym uruchomieniu: propozycja importu danych demo (teksty: config/texts.ts).
 // Podgląd w dowolnym momencie: ?demo w adresie.
 
 import { useState } from 'react'

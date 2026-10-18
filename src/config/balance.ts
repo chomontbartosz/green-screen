@@ -18,6 +18,8 @@ export type Color = 'green' | 'red' | 'orange' | 'purple' | 'white'
 
 type Source = { title: string; url: string }
 
+// BADANIA NAUKOWE — pełna lista źródeł, na których opierają się zasady aplikacji (element merytoryczny,
+// także te, których ekrany jeszcze nie cytują). Ta sama lista jest w README → „Badania naukowe”.
 export const SOURCES = {
   aune2017: { title: 'Aune i in. 2017, Int J Epidemiol — ok. 800 g warzyw i owoców dziennie: najniższe ryzyko chorób serca i przedwczesnej śmierci', url: 'https://doi.org/10.1093/ije/dyw319' },
   wang2021: { title: 'Wang i in. 2021, Circulation — ok. 5 porcji dziennie wiąże się z najniższą śmiertelnością (2 mln uczestników)', url: 'https://doi.org/10.1161/CIRCULATIONAHA.120.048996' },
@@ -77,6 +79,10 @@ export const COLORS: Record<Color, { name: string; few: string; swatch: string; 
 
 export const COLOR_ORDER: Color[] = ['green', 'red', 'orange', 'purple', 'white']
 
+/** Zasada grupowania kolorów — pokazywana w Bazie wiedzy. */
+export const COLOR_RULE =
+  'Kolory grupujemy według barwników, nie odcieni: niebieskie borówki i czarne jeżyny mają te same antocyjany, więc są w jednej grupie. Liczy się kolor części, którą jemy — banan ma biały miąższ.'
+
 export const BALANCE = {
   windowDays: 7, // analizujemy 7 pełnych dni przed dzisiaj
   minLoggedDays: 3, // podpowiedzi dopiero, gdy w tym czasie są co najmniej 3 dni z wpisami
@@ -101,7 +107,7 @@ export function checkBalance(days: Days, today: string, mode: Mode): Tip[] {
 
   const colorTips = COLOR_ORDER.map((color) => {
     const { few, benefit, weeklyMin } = COLORS[color]
-    const have = portions(eaten.filter((e) => e.color === color).map((e) => e.item), mode)
+    const have = eaten.filter((e) => e.color === color).reduce((sum, e) => sum + portions([e.item], mode), 0) // z wielu dni, więc sumujemy pozycje
     return {
       missing: 1 - have / weeklyMin,
       title: `Mało ${few} warzyw i owoców`,

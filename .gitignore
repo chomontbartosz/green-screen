@@ -1,4 +1,8 @@
 node_modules
-data/db.json
+/data/
 dist
 .DS_Store
+.env.local
+.env*.local
+.vercel
+bridge/bridge-config.php

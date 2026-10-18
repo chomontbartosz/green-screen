@@ -5,7 +5,7 @@ import { APP_NAME, INTRO, MODES, TAGLINE } from '../config/texts'
 import { useStore } from '../data/store'
 import type { Mode } from '../types'
 
-export function IntroPage({ onDone }: { onDone: () => void }) {
+export function IntroPage({ onDone, onLogin }: { onDone: () => void; onLogin: () => void }) {
   const { save } = useStore()
 
   return (
@@ -38,6 +38,12 @@ export function IntroPage({ onDone }: { onDone: () => void }) {
           ))}
         </div>
         <p className="mt-3 text-xs font-semibold">Tryb możesz zmienić w każdej chwili na dole ekranu.</p>
+        <p className="mt-6 text-center text-sm font-semibold">
+          Masz już konto?{' '}
+          <button onClick={onLogin} className="underline underline-offset-2">
+            Zaloguj się
+          </button>
+        </p>
       </div>
     </div>
   )

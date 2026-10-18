@@ -1,4 +1,4 @@
-// Tabela dni: ostatnie dni jako wiersze z samymi ikonkami i wynikiem (część „Podsumowania”).
+// Tabela dni: ostatnie dni jako wiersze z samymi ikonkami i wynikiem (część ekranu „Start”).
 
 import { useState } from 'react'
 import { ProduceIcon } from './ProduceIcon'

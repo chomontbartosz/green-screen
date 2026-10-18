@@ -1,4 +1,4 @@
-// WITAMINY, MINERAŁY I BŁONNIK — nazwy, skala 1–5 w dymku produktu i wykresy pierścieniowe w „Podsumowaniu”.
+// WITAMINY, MINERAŁY I BŁONNIK — nazwy, skala 1–5 w dymku produktu i wykresy pierścieniowe na ekranie „Start”.
 // Zawartość składników w każdym produkcie (skala 1–5) jest w config/produce.ts.
 //
 // Skala 1–5 jest orientacyjna: ile składnika jest w porcji ok. 100 g względem dziennego zapotrzebowania

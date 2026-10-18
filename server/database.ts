@@ -1,53 +1,71 @@
-// BAZA DANYCH — jedyne miejsce, które czyta i zapisuje plik data/db.json.
-// Działa jako mały serwer API wewnątrz `npm run dev`:
-//   GET   /api/db → cała baza
-//   PATCH /api/db → zapis zmian ({ settings?, days? }), zasada łączenia: src/data/changes.ts
+// BAZA DANYCH — jedyne miejsce, które rozmawia z MySQL. Baza na home.pl przyjmuje połączenia tylko z własnego
+// serwera, więc zapytania idą przez most bridge/bridge.php (HTTPS + tajny klucz). Most zna tylko nazwane operacje
+// poniżej i sam tworzy tabelę `users`. Dane użytkownika (dni i ustawienia) są w kolumnie `data` jako JSON.
 
-import fs from 'node:fs'
-import path from 'node:path'
-import type { Connect, Plugin } from 'vite'
-import { applyChanges } from '../src/data/changes'
-import type { Database } from '../src/types'
+import type { Database } from '../src/types.js'
+import { BRIDGE } from './config.js'
 
-const DB_FILE = path.resolve('data/db.json')
-
-/** Baza przy pierwszym uruchomieniu */
-const EMPTY_DB: Database = { settings: { mode: null, demoOffered: false }, days: {} }
-
-function readDb(): Database {
-  if (!fs.existsSync(DB_FILE)) return EMPTY_DB
-  return applyChanges(EMPTY_DB, JSON.parse(fs.readFileSync(DB_FILE, 'utf8'))) // uzupełnia brakujące pola
+export type UserRow = {
+  id: number
+  email: string
+  password_hash: string
+  guest_name: string
+  verified: boolean
+  failed_logins: number
+  locked_until: Date | null
+  data: Database
 }
 
-function writeDb(db: Database) {
-  fs.mkdirSync(path.dirname(DB_FILE), { recursive: true })
-  fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2))
+/** Błąd „taki rekord już istnieje” (np. ten sam e-mail). */
+export class DuplicateError extends Error {}
+
+async function bridge(op: string, params: unknown[]): Promise<Record<string, unknown> | null> {
+  const res = await fetch(BRIDGE.url(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Bridge-Secret': BRIDGE.secret() },
+    body: JSON.stringify({ op, params }),
+  })
+  const body = (await res.json().catch(() => ({}))) as { row?: Record<string, unknown> | null; error?: string }
+  if (res.status === 409) throw new DuplicateError(op)
+  if (!res.ok) throw new Error(`Most do bazy: ${op} → ${res.status} ${body.error ?? ''}`)
+  return body.row ?? null
 }
 
-const api: Connect.NextHandleFunction = (req, res, next) => {
-  const reply = (data: unknown) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.end(JSON.stringify(data))
+/** MySQL zwraca daty jako tekst w UTC („2026-10-17 12:00:00”). */
+const utcDate = (value: unknown) => (value ? new Date(`${String(value).replace(' ', 'T')}Z`) : null)
+/** …i przyjmuje je w tym samym formacie. */
+const toUtc = (date: Date | null) => (date ? date.toISOString().slice(0, 19).replace('T', ' ') : null)
+
+async function one(op: string, params: unknown[]): Promise<UserRow | null> {
+  const row = await bridge(op, params)
+  if (!row) return null
+  return {
+    id: Number(row.id),
+    email: String(row.email),
+    password_hash: String(row.password_hash),
+    guest_name: String(row.guest_name),
+    verified: Number(row.verified) === 1,
+    failed_logins: Number(row.failed_logins),
+    locked_until: utcDate(row.locked_until),
+    data: row.data as Database,
   }
-
-  if (req.method === 'GET') return reply(readDb())
-
-  if (req.method === 'PATCH') {
-    let body = ''
-    req.on('data', (chunk) => (body += chunk))
-    req.on('end', () => {
-      const db = applyChanges(readDb(), JSON.parse(body))
-      writeDb(db)
-      reply(db)
-    })
-    return
-  }
-
-  next()
 }
 
-export const databasePlugin = (): Plugin => ({
-  name: 'json-database',
-  configureServer: (server) => void server.middlewares.use('/api/db', api),
-  configurePreviewServer: (server) => void server.middlewares.use('/api/db', api),
-})
+const run = async (op: string, params: unknown[]) => void (await bridge(op, params))
+
+export const findUserByEmail = (email: string) => one('findUserByEmail', [email])
+export const findUserById = (id: number) => one('findUserById', [id])
+export const findUserByVerifyToken = (token: string) => one('findUserByVerifyToken', [token])
+export const findUserByResetToken = (token: string) => one('findUserByResetToken', [token])
+
+export async function createUser(user: { email: string; passwordHash: string; guestName: string; verifyToken: string; data: Database }) {
+  await run('createUser', [user.email, user.passwordHash, user.guestName, user.verifyToken, JSON.stringify(user.data)])
+  return (await findUserByEmail(user.email))!
+}
+
+export const saveUserData = (id: number, data: Database) => run('saveUserData', [JSON.stringify(data), id])
+export const markVerified = (id: number) => run('markVerified', [id])
+export const setResetToken = (id: number, token: string, expires: Date) => run('setResetToken', [token, toUtc(expires), id])
+export const setPassword = (id: number, passwordHash: string) => run('setPassword', [passwordHash, id])
+export const recordFailedLogin = (id: number, lockUntil: Date | null) => run('recordFailedLogin', [toUtc(lockUntil), id])
+export const clearFailedLogins = (id: number) => run('clearFailedLogins', [id])

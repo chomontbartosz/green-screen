@@ -54,7 +54,24 @@ export const MODES: Record<Mode, { label: string; description: string }> = {
 
 export const DEMO = {
   question: 'Zaimportować dane demo?',
-  text: 'Wypełnimy przykładowymi danymi ostatnie 30 dni, żeby od razu zobaczyć kalendarz i podsumowanie w akcji. Dzisiejszy dzień zostaje pusty dla Ciebie.',
+  text: 'Wypełnimy przykładowymi danymi ostatnie 30 dni, żeby od razu zobaczyć wykresy, kalendarz i odznaki w akcji. Dzisiejszy dzień zostaje pusty dla Ciebie.',
   accept: 'Importuj dane demo',
   decline: 'Nie, dzięki',
+}
+
+export const ACCOUNT = {
+  banner: {
+    title: '💾 Nie strać swoich danych',
+    text: 'Na razie wszystko jest zapisane tylko w tej przeglądarce. Załóż darmowe konto, a dane będą bezpieczne i dostępne na każdym urządzeniu.',
+    register: 'Załóż konto',
+    login: 'Mam już konto',
+  },
+  titles: { register: 'Załóż konto', login: 'Zaloguj się', forgot: 'Nie pamiętam hasła', reset: 'Ustaw nowe hasło' },
+  registerInfo: 'Twoje dotychczasowe wpisy zostaną przeniesione na konto. Na podany adres wyślemy powitanie z linkiem potwierdzającym.',
+  forgotInfo: 'Podaj adres konta — wyślemy link do ustawienia nowego hasła.',
+  forgotDone: 'Jeśli konto z tym adresem istnieje, wysłaliśmy link do zmiany hasła. Sprawdź skrzynkę (także spam).',
+  registered: 'Konto założone! Sprawdź skrzynkę i potwierdź adres e-mail.',
+  verified: '✅ Adres e-mail potwierdzony. Dzięki!',
+  verifyFailed: 'Ten link potwierdzający jest nieaktualny.',
+  passwordsDiffer: 'Hasła się różnią.',
 }

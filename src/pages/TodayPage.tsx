@@ -1,24 +1,24 @@
-// Strona „Dziś”: przypomnienie, podpowiedzi z ostatnich dni, edycja dzisiejszych porcji, odkrycie dnia i sezon.
+// Strona „Dziś”: przypomnienie, podpowiedzi z ostatnich dni, edycja dzisiejszych porcji i odkrycia dnia.
 // O północy przełącza się na nowy, pusty dzień.
 
+import { AccountBanner } from '../components/AccountBanner'
+import type { AuthMode } from '../components/AuthModal'
 import { BalanceTips } from '../components/BalanceTips'
 import { DayEditor } from '../components/DayEditor'
-import { DemoBanner } from '../components/DemoBanner'
 import { DiscoverCard } from '../components/DiscoverCard'
 import { Reminder } from '../components/Reminder'
-import { SeasonCard } from '../components/SeasonCard'
 import { StreakChip } from '../components/StreakChip'
 import { useStore } from '../data/store'
 import { formatLong } from '../lib/date'
 
-type Props = { today: string; now: Date; onDemoImported: () => void }
+type Props = { today: string; now: Date; onAccount: (mode: AuthMode) => void }
 
-export function TodayPage({ today, now, onDemoImported }: Props) {
+export function TodayPage({ today, now, onAccount }: Props) {
   const { dayOf, updateDay } = useStore()
 
   return (
     <div className="space-y-4">
-      <DemoBanner today={today} onImported={onDemoImported} />
+      <AccountBanner today={today} onOpen={onAccount} />
       <Reminder day={dayOf(today)} now={now} />
       <BalanceTips today={today} />
       <header className="flex flex-wrap items-center justify-between gap-2">
@@ -27,7 +27,6 @@ export function TodayPage({ today, now, onDemoImported }: Props) {
       </header>
       <DayEditor key={today} day={dayOf(today)} onChange={(day) => updateDay(today, day)} />
       <DiscoverCard today={today} />
-      <SeasonCard today={today} />
     </div>
   )
 }
