@@ -49,12 +49,12 @@ Prosty dziennik warzyw i owoców. Zamiast ważyć jedzenie i liczyć kalorie, od
 | Ekran | Co tam jest |
 | --- | --- |
 | 👋 **Intro** | Przy pierwszym uruchomieniu: koncepcja, zasady, zdjęcia porcji i wybór trybu |
-| 🏠 **Start** | Pierwszy ekran: baner danych demo, wykresy pierścieniowe witamin i minerałów z 7 dni, zielona karta „Dziś na talerzu” z przyciskiem „Dodaj do dziś”, tabela dni z ikonkami |
-| ➕ **Dziś** (czarny „+” na środku paska) | Wybór warzyw i owoców (lista z wyszukiwaniem, własne pozycje z „×”), autozapis, wynik 0–100, kolory dnia, seria 🔥, wieczorne przypomnienie ⏰, podpowiedzi balansu 💡, dyskretny link „Jak to działa?” przy „+”, karuzela „Odkryj coś nowego” ✨, „Cofnij” po usunięciu, nagroda za 100 pkt 🎉 |
+| 🏠 **Start** | Pierwszy ekran: baner danych demo, wykresy pierścieniowe witamin i minerałów z 7 dni, zielona karta „Dziś na talerzu” z przyciskiem „Dodaj więcej”, tabela dni z ikonkami (od pierwszej wizyty, bez starych pustych dni) |
+| ➕ **Dziś** (czarny „+” na środku paska) | Wybór warzyw i owoców (lista z wyszukiwaniem, własne pozycje z „×”), autozapis, wynik 0–100, kolory dnia, seria 🔥, wieczorne przypomnienie ⏰, podpowiedzi balansu (kropka w brakującym kolorze + przykładowe produkty), dyskretny link „Jak to działa?” przy „+”, karuzela „Odkryj coś nowego” ✨, „Cofnij” po usunięciu, nagroda za 100 pkt 🎉 |
 | 📅 **Kalendarz** | Miesiąc z porcjami i kolorem wyniku każdego dnia, podgląd i edycja dni z przeszłości, „W sezonie” 🗓️ dla oglądanego miesiąca |
 | 🏆 **Odznaki** | Seria dni z rzędu i 10 odznak; wielokrotne z licznikiem (×2, ×10…), ostatnio zdobyta na początku |
 | 👤 **Konto** (nagłówek) | Gość dostaje losową nazwę (np. `user12213654`) i od razu korzysta; codzienny baner „Nie strać swoich danych” (z „×”); rejestracja (e-mail + hasło 2×), logowanie, „Nie pamiętam hasła”, mail powitalny z potwierdzeniem adresu; na intro link „Masz już konto? Zaloguj się” |
-| 📚 **Baza wiedzy** | Lista tematów, każdy na osobnym ekranie ze strzałką powrotu: Warzywa i owoce (odblokowane w kolorze, reszta wyszarzona, ale z pełnym opisem) · Co się liczy, a co nie · Kolory · Witaminy i minerały · Jak przechowywać i przygotowywać · Mity i fakty · Nasze podejście vs dieta · Jak to działa? |
+| 📚 **Baza wiedzy** | Lista tematów, każdy na osobnym ekranie ze strzałką powrotu: Warzywa i owoce (odblokowane w kolorze, reszta wyszarzona, ale z pełnym opisem) · Co się liczy, a co nie · Kolory · Witaminy i minerały · Jak przechowywać i przygotowywać · Mity i fakty · Kobieta w ciąży 🤰 · Nasze podejście vs dieta (z zastrzeżeniem „szacunki, nie diagnoza”) · Jak to działa? |
 
 Na każdej ikonce produktu jest dymek: duża miniatura, kolor, jedno zdanie „dlaczego warto” i składniki w skali 1–5.
 
@@ -124,7 +124,7 @@ Borówki i jeżyny mają te same antocyjany, więc są w jednej grupie. Liczy si
 | --- | --- |
 | 🍎 **Listę owoców i warzyw** (kolejność tematyczna, kolory, znaczniki kiszonka/strączki/suszone, gramy porcji, sezon, ikonki, opisy, składniki) | [src/config/produce.ts](src/config/produce.ts) |
 | 🧮 **Punktację** (cele 5 + 5, wagi, gramy na porcję, limit strączków, formuła) | [src/config/scoring.ts](src/config/scoring.ts) |
-| 📚 **Teksty Bazy wiedzy** (co się liczy, przechowywanie, mity, podejście vs dieta) | [src/config/knowledge.ts](src/config/knowledge.ts) |
+| 📚 **Teksty Bazy wiedzy** (co się liczy, przechowywanie, mity, ciąża, podejście vs dieta) | [src/config/knowledge.ts](src/config/knowledge.ts) |
 | 🌈 **Kolory i balans** (grupy, minima tygodniowe, podpowiedzi) · 🔬 **lista badań naukowych** | [src/config/balance.ts](src/config/balance.ts) |
 | 🔬 **Witaminy i minerały** (nazwy, skala 1–5, wykresy z 7 dni) | [src/config/nutrients.ts](src/config/nutrients.ts) |
 | 🏆 **Serie i odznaki** | [src/config/achievements.ts](src/config/achievements.ts) |
@@ -174,7 +174,7 @@ Borówki i jeżyny mają te same antocyjany, więc są w jednej grupie. Liczy si
 | Element | Plik |
 | --- | --- |
 | Treść „Jak to działa?” · zielona karta · dyskretny link przy „+” | [HowItWorks.tsx](src/components/HowItWorks.tsx) · [HowItWorksCard.tsx](src/components/HowItWorksCard.tsx) · [HowItWorksLink.tsx](src/components/HowItWorksLink.tsx) |
-| Ekrany Bazy wiedzy (kolory, witaminy, co się liczy, przechowywanie, mity, podejście) | [src/components/knowledge/](src/components/knowledge/) |
+| Ekrany Bazy wiedzy (kolory, witaminy, co się liczy, przechowywanie, mity, ciąża, podejście) + wspólne karty porad i ramka zastrzeżenia | [src/components/knowledge/](src/components/knowledge/) |
 | Karta „Dziś na talerzu” na Starcie | [TodayProgress.tsx](src/components/TodayProgress.tsx) |
 | Okno modalne · dymek „i” z badaniem | [Modal.tsx](src/components/Modal.tsx) · [InfoTip.tsx](src/components/InfoTip.tsx) |
 | Katalog warzyw i owoców (Baza wiedzy) · opis produktu (dymek i katalog) | [ProduceCatalog.tsx](src/components/ProduceCatalog.tsx) · [ProduceInfo.tsx](src/components/ProduceInfo.tsx) |
@@ -228,7 +228,7 @@ Tabela `users` tworzy się sama przy pierwszym zapytaniu. Dane użytkownika są 
 
 ```json
 {
-  "settings": { "mode": "basic", "demoOffered": true, "hiddenCustom": [] },
+  "settings": { "mode": "basic", "demoOffered": true, "hiddenCustom": [], "startDate": "2026-10-08" },
   "days": {
     "2026-10-15": { "vegetables": [{ "name": "Marchew" }], "fruits": [{ "name": "Jabłko", "grams": 150 }] }
   }
@@ -239,6 +239,7 @@ Tabela `users` tworzy się sama przy pierwszym zapytaniu. Dane użytkownika są 
 - Każdy element listy to jedna pozycja. `grams` jest używane tylko w trybie eksperta.
 - Własne pozycje zapisują się tak samo i potem same pojawiają się na liście wyboru. „×” przy nich na liście dopisuje je do `hiddenCustom` (historia dni zostaje bez zmian), a ponowne wpisanie tej nazwy przywraca je na listę.
 - Puste dni nie są zapisywane.
+- `startDate` to dzień pierwszej wizyty — od niego zaczyna się lista ostatnich dni na „Start” (wcześniejsze dni da się uzupełnić w kalendarzu).
 
 ### 🔑 Zmienne środowiskowe
 
@@ -275,6 +276,7 @@ GitHub (kod) ──push──▶ Vercel (strona + /api) ──HTTPS──▶ bar
 | 🧮 **Liczymy, nie zapisujemy** | Wynik, kolory, serie, odznaki (z licznikami i datami), wykresy, odblokowane produkty i lista własnych pozycji są wyliczane z zapisanych dni | Baza trzyma tylko fakty („co zjedzone”), więc nic nie może się rozsynchronizować |
 | 👤 **Najpierw gość, potem konto** | Dane gościa w `localStorage`, konto dopiero gdy użytkownik zechce | Zero barier na start: aplikacja działa od pierwszej sekundy |
 | ☁️ **Vercel Functions + MySQL na home.pl** | Jeden plik `api/[route].ts` kieruje wszystkie `/api/*` do `server/routes.ts`; lokalnie te same funkcje podpina wtyczka Vite | Jeden kod API dla produkcji i lokalnie; baza na posiadanym serwerze, bez dodatkowych usług |
+| 🔁 **Ponowienie odczytu** | Przy chwilowym błędzie bazy (5xx) most powtarza odczyt (`find…`) jeden raz; błędny klucz daje w logach jasny komunikat | Pojedyncze błędy hostingu nie psują logowania ani rejestracji |
 | 🌉 **Most PHP do bazy** | Hosting współdzielony home.pl nie wpuszcza połączeń MySQL z zewnątrz, więc `bridge/bridge.php` działa na tym samym serwerze i wykonuje tylko nazwane, sparametryzowane zapytania po podaniu tajnego klucza; aplikacja łączy się z nim wyłącznie przez HTTPS | Baza zostaje na home.pl, a cała logika kont (hasła, sesje, maile) zostaje w TypeScripcie |
 | 🗄️ **Dane użytkownika jako JSON w MySQL** | Kolumna `data` trzyma cały obiekt z `types.ts`, zmiany nakłada `applyChanges` | Ten sam model danych na ekranie, w przeglądarce i w bazie, bez mapowania na wiele tabel |
 | 🔐 **Bezpieczeństwo kont** | bcrypt, podpisane ciasteczko HttpOnly (HMAC), blokada po 5 błędnych hasłach, tokeny do linków z maili, ta sama odpowiedź „Nie pamiętam hasła” dla istniejących i nieistniejących adresów | Standardowe minimum, bez zewnętrznych usług logowania |
@@ -298,6 +300,7 @@ GitHub (kod) ──push──▶ Vercel (strona + /api) ──HTTPS──▶ bar
 **Znane ograniczenia:**
 
 - brak testów automatycznych,
+- okres 7 dni dla wykresów i podpowiedzi to założenie projektu (wzorowane na tygodniowych celach w zaleceniach żywieniowych), a nie wynik badań porównujących różne okresy,
 - każde zapytanie do bazy idzie przez most na home.pl, więc jest o kilkadziesiąt ms wolniejsze niż bezpośrednie połączenie,
 - zalogowany użytkownik bez internetu widzi dane, ale zmiany nie zapiszą się na koncie,
 - zawartość składników to szacunki,

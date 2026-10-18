@@ -18,6 +18,7 @@ export type Settings = {
   mode: Mode | null // null = użytkownik nie przeszedł jeszcze ekranu intro
   demoOffered: boolean // true = propozycja importu danych demo została już przyjęta lub odrzucona
   hiddenCustom: string[] // własne pozycje usunięte z listy wyboru (historia dni zostaje bez zmian)
+  startDate?: string // dzień pierwszej wizyty (RRRR-MM-DD) — od niego zaczyna się lista ostatnich dni
 }
 
 /** Cała baza */

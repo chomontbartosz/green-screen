@@ -2,6 +2,7 @@
 // Po założeniu konta lub zalogowaniu dane trafiają na serwer, a pamięć gościa jest czyszczona.
 
 import type { Database } from '../types'
+import { toKey } from '../lib/date'
 import { EMPTY_DB, normalizeDb } from './changes'
 
 const KEY = 'green-screen'
@@ -31,14 +32,14 @@ export function writeGuest(guest: Guest) {
 export function loadGuest(): Guest {
   const saved = read()
   if (saved) return { guestName: saved.guestName, db: normalizeDb(saved.db) }
-  const guest = { guestName: newGuestName(), db: normalizeDb(EMPTY_DB) }
+  const guest = { guestName: newGuestName(), db: normalizeDb({ settings: { ...EMPTY_DB.settings, startDate: toKey(new Date()) } }) }
   writeGuest(guest)
   return guest
 }
 
 /** Nowy, pusty gość (np. po wylogowaniu) — zachowuje tylko wybrany tryb. */
 export function resetGuest(mode: Database['settings']['mode']): Guest {
-  const guest = { guestName: newGuestName(), db: normalizeDb({ settings: { ...EMPTY_DB.settings, mode, demoOffered: true } }) }
+  const guest = { guestName: newGuestName(), db: normalizeDb({ settings: { ...EMPTY_DB.settings, mode, demoOffered: true, startDate: toKey(new Date()) } }) }
   writeGuest(guest)
   return guest
 }

@@ -12,6 +12,9 @@ export function shiftKey(key: string, delta: number) {
   return toKey(new Date(d.getFullYear(), d.getMonth(), d.getDate() + delta))
 }
 
+/** Ile dni dzieli dwie daty (b − a). */
+export const daysBetween = (a: string, b: string) => Math.round((fromKey(b).getTime() - fromKey(a).getTime()) / 86_400_000)
+
 /** Poniedziałek tygodnia, do którego należy dzień. */
 export const weekStart = (key: string) => shiftKey(key, -((fromKey(key).getDay() + 6) % 7))
 

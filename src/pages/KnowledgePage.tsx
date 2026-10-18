@@ -1,7 +1,7 @@
 // Strona „Baza wiedzy”: lista tematów → osobny ekran każdego tematu ze strzałką powrotu.
 // Nowy temat dodasz jednym wpisem w SCREENS (treści tekstowe: config/knowledge.ts).
 
-import { ArrowLeft, Carrot, ChevronRight, CircleCheck, CircleHelp, CookingPot, Lightbulb, Palette, Pill, Scale } from 'lucide-react'
+import { ArrowLeft, Baby, Carrot, ChevronRight, CircleCheck, CircleHelp, CookingPot, Lightbulb, Palette, Pill, Scale } from 'lucide-react'
 import { useState } from 'react'
 import { HowItWorksCard } from '../components/HowItWorksCard'
 import { ApproachGuide } from '../components/knowledge/ApproachGuide'
@@ -9,6 +9,7 @@ import { ColorsGuide } from '../components/knowledge/ColorsGuide'
 import { CountsGuide } from '../components/knowledge/CountsGuide'
 import { MythsGuide } from '../components/knowledge/MythsGuide'
 import { NutrientsGuide } from '../components/knowledge/NutrientsGuide'
+import { PregnancyGuide } from '../components/knowledge/PregnancyGuide'
 import { StorageGuide } from '../components/knowledge/StorageGuide'
 import { ProduceCatalog } from '../components/ProduceCatalog'
 
@@ -19,6 +20,7 @@ const SCREENS = {
   nutrients: { title: 'Witaminy i minerały', description: 'Do czego służą i gdzie ich najwięcej', Icon: Pill, Content: NutrientsGuide },
   storage: { title: 'Jak przechowywać i przygotowywać', description: 'Żeby nie tracić witamin i smaku', Icon: CookingPot, Content: StorageGuide },
   myths: { title: 'Mity i fakty', description: 'Owoce tuczą? Mrożonki są gorsze?', Icon: CircleHelp, Content: MythsGuide },
+  pregnancy: { title: 'Kobieta w ciąży', description: 'Foliany, bezpieczne mycie, czego unikać', Icon: Baby, Content: PregnancyGuide },
   approach: { title: 'Nasze podejście vs dieta', description: 'Dlaczego nawyk zamiast liczenia kalorii', Icon: Scale, Content: ApproachGuide },
   how: { title: 'Jak to działa?', description: 'Zasada 5 + 5, kolory i porcja', Icon: Lightbulb, Content: HowItWorksCard },
 }

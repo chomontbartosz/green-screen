@@ -30,9 +30,9 @@ export function StartPage({ today, onAddToday, onAccount }: Props) {
           ))}
         </div>
         <p className="mt-2 text-[10px] text-stone-400">
-          Szacunek orientacyjny, nie pomiar.{' '}
+          Szacunek orientacyjny na podstawie{' '}
           <a href={NUTRITION.source.url} target="_blank" rel="noreferrer" className="underline">
-            Normy: {NUTRITION.source.title}
+            {NUTRITION.source.title}
           </a>
         </p>
       </section>

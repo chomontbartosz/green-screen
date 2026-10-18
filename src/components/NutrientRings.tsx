@@ -34,7 +34,8 @@ export function NutrientRings({ chart, coverage }: Props) {
           const a2 = a1 + step
           const pad = GAP / R_OUTER // stały odstęp między wycinkami
           const mid = a1 + step / 2
-          const dim = active && active.nutrient !== slice.nutrient
+          const isActive = active?.nutrient === slice.nutrient
+          const dim = active && !isActive
           return (
             <g
               key={slice.nutrient}
@@ -48,10 +49,12 @@ export function NutrientRings({ chart, coverage }: Props) {
                   <path
                     key={ring}
                     d={sector(r1, r1 + RING - GAP, a1 + pad, a2 - pad)}
-                    className={ring < slice.rings ? 'fill-brand-strong' : 'fill-stone-100'}
+                    className={ring < slice.rings ? 'fill-brand-strong' : isActive ? 'fill-stone-300' : 'fill-stone-100'}
                   />
                 )
               })}
+              {/* wskazany wycinek: obrys, żeby był widoczny także wtedy, gdy jest pusty */}
+              {isActive && <path d={sector(R_INNER, R_OUTER - GAP, a1 + pad, a2 - pad)} className="fill-none stroke-stone-800" strokeWidth={1.5} />}
               {/* większe pole najechania niż sam wycinek */}
               <path d={sector(R_INNER, R_LABEL + 8, a1, a2)} className="fill-transparent" />
               <text

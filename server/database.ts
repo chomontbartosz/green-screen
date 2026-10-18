@@ -19,7 +19,7 @@ export type UserRow = {
 /** Błąd „taki rekord już istnieje” (np. ten sam e-mail). */
 export class DuplicateError extends Error {}
 
-async function bridge(op: string, params: unknown[]): Promise<Record<string, unknown> | null> {
+async function bridge(op: string, params: unknown[], retry = op.startsWith('find')): Promise<Record<string, unknown> | null> {
   const res = await fetch(BRIDGE.url(), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-Bridge-Secret': BRIDGE.secret() },
@@ -27,6 +27,8 @@ async function bridge(op: string, params: unknown[]): Promise<Record<string, unk
   })
   const body = (await res.json().catch(() => ({}))) as { row?: Record<string, unknown> | null; error?: string }
   if (res.status === 409) throw new DuplicateError(op)
+  if (res.status === 401) throw new Error('Most do bazy odrzucił klucz: BRIDGE_SECRET w Vercelu ≠ secret w bridge-config.php na home.pl')
+  if (res.status >= 500 && retry) return bridge(op, params, false) // chwilowy błąd bazy — odczyt można bezpiecznie powtórzyć raz
   if (!res.ok) throw new Error(`Most do bazy: ${op} → ${res.status} ${body.error ?? ''}`)
   return body.row ?? null
 }

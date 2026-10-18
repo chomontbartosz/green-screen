@@ -2,6 +2,7 @@
 
 import { APPROACH } from '../../config/knowledge'
 import { APP_NAME } from '../../config/texts'
+import { Disclaimer } from './Disclaimer'
 
 export function ApproachGuide() {
   return (
@@ -22,7 +23,7 @@ export function ApproachGuide() {
           </div>
         </article>
       ))}
-      <p className="text-xs text-stone-500">{APPROACH.note}</p>
+      <Disclaimer title={APPROACH.disclaimer.title} text={APPROACH.disclaimer.text} />
     </div>
   )
 }

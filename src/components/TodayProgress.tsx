@@ -35,7 +35,7 @@ export function TodayProgress({ today, onAdd }: Props) {
         onClick={onAdd}
         className="mt-3 flex w-full items-center justify-center gap-1 rounded-full bg-black py-2.5 text-sm font-semibold text-white hover:bg-stone-800"
       >
-        {done ? 'Zobacz dzisiejszy dzień' : 'Dodaj do dziś'} <ArrowRight className="size-4" aria-hidden />
+        {done ? 'Zobacz dzisiejszy dzień' : 'Dodaj więcej'} <ArrowRight className="size-4" aria-hidden />
       </button>
     </section>
   )

@@ -1,21 +1,24 @@
 // Tabela dni: ostatnie dni jako wiersze z samymi ikonkami i wynikiem (część ekranu „Start”).
+// Zaczyna się od pierwszej wizyty (albo od najstarszego wpisu, jeśli jest wcześniejszy), bez starych pustych dni.
 
 import { useState } from 'react'
 import { ProduceIcon } from './ProduceIcon'
 import { GROUP_ORDER, GROUPS } from '../config/produce'
 import { calculateScore, scoreLevel } from '../config/scoring'
 import { useStore } from '../data/store'
-import { fromKey, pastKeys } from '../lib/date'
+import { daysBetween, fromKey, pastKeys } from '../lib/date'
 
 const PAGE = 30 // ile dni pokazać naraz
 
 const shortDate = (key: string) => fromKey(key).toLocaleDateString('pl-PL', { weekday: 'short', day: 'numeric', month: 'numeric' })
 
 export function DaysTable({ today }: { today: string }) {
-  const { mode, dayOf } = useStore()
+  const { db, mode, dayOf } = useStore()
   const [count, setCount] = useState(PAGE)
 
-  const keys = pastKeys(today, count)
+  const firstDay = [db.settings.startDate ?? today, ...Object.keys(db.days)].sort()[0]
+  const total = Math.max(daysBetween(firstDay, today) + 1, 1)
+  const keys = pastKeys(today, Math.min(count, total))
 
   return (
     <section className="overflow-hidden rounded-2xl bg-white shadow-sm">
@@ -59,9 +62,11 @@ export function DaysTable({ today }: { today: string }) {
           })}
         </tbody>
       </table>
-      <button onClick={() => setCount(count + PAGE)} className="w-full py-3 text-sm text-brand-ink hover:bg-stone-50">
-        Pokaż starsze dni
-      </button>
+      {count < total && (
+        <button onClick={() => setCount(count + PAGE)} className="w-full py-3 text-sm text-brand-ink hover:bg-stone-50">
+          Pokaż starsze dni
+        </button>
+      )}
     </section>
   )
 }

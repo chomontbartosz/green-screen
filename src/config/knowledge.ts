@@ -1,5 +1,5 @@
 // BAZA WIEDZY — teksty ekranów: „Co się liczy, a co nie”, „Jak przechowywać i przygotowywać”, „Mity i fakty”,
-// „Nasze podejście vs dieta”. Ekrany „Kolory” i „Witaminy i minerały” budują się same z config/balance.ts
+// „Nasze podejście vs dieta”, „Kobieta w ciąży”. Ekrany „Kolory” i „Witaminy i minerały” budują się same z config/balance.ts
 // i config/nutrients.ts, a „Warzywa i owoce” z config/produce.ts. Listę ekranów ustawia pages/KnowledgePage.tsx.
 
 export const COUNTS = {
@@ -61,5 +61,31 @@ export const APPROACH = {
     { topic: 'Motywacja', diet: 'Liczba na wadze', ours: 'Wynik, kolory, odznaki, samopoczucie' },
     { topic: 'Po zakończeniu', diet: 'Ryzyko efektu jo-jo', ours: 'Nie ma końca — nawyk zostaje' },
   ],
-  note: 'Jeśli potrzebujesz diety ze wskazań medycznych lub ścisłej redukcji masy ciała, skorzystaj z pomocy lekarza lub dietetyka. Green Screen możesz używać równolegle.',
+  disclaimer: {
+    title: '⚠️ Szacunki, nie diagnoza',
+    text: [
+      'Wyniki, wykresy i zawartość składników w Green Screen to szacunki, a nie dokładne pomiary. Aplikacja nie zastąpi diety ustalonej przez lekarza ani dietetyka — jeśli chorujesz, masz alergie, zaburzenia odżywiania albo jesteś w ciąży, skonsultuj sposób żywienia ze specjalistą.',
+      'Dla większości osób, które po prostu chcą jeść zdrowiej, to prosta alternatywa: dziennik, przypomnienia i podpowiedzi, których warzyw i owoców jeść więcej.',
+    ],
+  },
+}
+
+export const PREGNANCY = {
+  intro: 'W ciąży warzywa i owoce są jeszcze ważniejsze: dostarczają folianów, witaminy C, potasu i błonnika, który pomaga na częste zaparcia. Zasada 5 + 5 dalej obowiązuje — poniżej to, na co warto zwrócić szczególną uwagę.',
+  tips: [
+    { icon: '🥬', title: 'Foliany na start', text: 'Zielone liście, brokuł, szparagi i strączki to naturalne źródła folianów. Mimo to w ciąży zaleca się dodatkowo suplement kwasu foliowego (zwykle 400 µg dziennie, od starań do 12. tygodnia) — dawkę ustala lekarz.' },
+    { icon: '🚿', title: 'Myj dokładnie', text: 'Ziemia na warzywach i owocach może zawierać bakterie i pasożyty (np. toksoplazmę). Myj wszystko pod bieżącą wodą, także to, co obierasz.' },
+    { icon: '🌱', title: 'Uwaga na surowe kiełki i soki', text: 'Surowe kiełki i niepasteryzowane soki (np. świeżo wyciskane na straganie) mogą zawierać groźne bakterie. Kiełki jedz po ugotowaniu, soki wybieraj pasteryzowane.' },
+    { icon: '🥕', title: 'Witamina A tylko z roślin', text: 'Beta-karoten z marchwi, dyni czy batatów jest bezpieczny — organizm przetwarza go na witaminę A tyle, ile potrzebuje. Unikaj natomiast suplementów z retinolem i wątróbki.' },
+    { icon: '🍋', title: 'Żelazo + witamina C', text: 'Zapotrzebowanie na żelazo rośnie. Żelazo ze szpinaku czy soczewicy lepiej się wchłania z witaminą C — dodaj paprykę, natkę albo sok z cytryny.' },
+    { icon: '🫚', title: 'Na mdłości', text: 'Niektórym kobietom pomaga imbir, a także małe, częste porcje owoców i chłodne warzywa. Jeśli mdłości są silne, porozmawiaj z lekarzem.' },
+    { icon: '🍉', title: 'Cukrzyca ciążowa', text: 'Owoców nie trzeba odstawiać, ale ich ilość i porę warto ustalić z lekarzem lub dietetykiem. Suszone owoce i soki podnoszą cukier najszybciej.' },
+  ],
+  note: 'To ogólne informacje, a nie porada medyczna. W ciąży sposób żywienia i suplementację zawsze ustalaj z lekarzem lub położną.',
+  sources: [
+    { title: 'NHS — Have a healthy diet in pregnancy', url: 'https://www.nhs.uk/pregnancy/keeping-well/have-a-healthy-diet/' },
+    { title: 'NHS — Vitamins and supplements in pregnancy', url: 'https://www.nhs.uk/pregnancy/keeping-well/pregnancy-vitamins-and-supplements/' },
+    { title: 'NHS — Foods to avoid in pregnancy', url: 'https://www.nhs.uk/pregnancy/keeping-well/foods-to-avoid/' },
+    { title: 'FDA — Food safety for pregnant women', url: 'https://www.fda.gov/food/people-risk-foodborne-illness/food-safety-pregnant-women-and-their-unborn-babies' },
+  ],
 }
