@@ -4,10 +4,10 @@
 import { COLORS } from '../config/balance'
 import { LEVELS, NUTRIENTS, type Level, type Nutrient } from '../config/nutrients'
 import { findProduce, GROUPS } from '../config/produce'
+import { MONTH_SHORT } from '../lib/date'
 import type { Group } from '../types'
 import { ProduceImage } from './ProduceIcon'
 
-const MONTHS = ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru']
 
 type Props = { group: Group; name: string; maxNutrients?: number; showSeason?: boolean }
 
@@ -35,7 +35,7 @@ export function ProduceInfo({ group, name, maxNutrients = Infinity, showSeason =
 
       {showSeason && produce && (
         <p className="mt-2 text-xs text-stone-500">
-          🗓️ Sezon w Polsce: {produce.season.length ? produce.season.map((m) => MONTHS[m - 1]).join(', ') : 'import, w sklepach cały rok'}
+          🗓️ Sezon w Polsce: {produce.season.length ? produce.season.map((m) => MONTH_SHORT[m - 1]).join(', ') : 'import, w sklepach cały rok'}
         </p>
       )}
 

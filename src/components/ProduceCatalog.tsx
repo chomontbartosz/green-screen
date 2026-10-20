@@ -4,7 +4,7 @@
 import { Lock } from 'lucide-react'
 import { useState } from 'react'
 import { COLOR_ORDER } from '../config/balance'
-import { GROUP_ORDER, GROUPS, PRODUCE, type Produce } from '../config/produce'
+import { GROUP_ORDER, GROUPS, itemsOfDay, PRODUCE, type Produce } from '../config/produce'
 import { useStore } from '../data/store'
 import type { Group } from '../types'
 import { Modal } from './Modal'
@@ -23,8 +23,9 @@ export function ProduceCatalog() {
   const [selected, setSelected] = useState<{ group: Group; name: string } | null>(null)
   const [sort, setSort] = useState<Sort>('default')
 
-  const eaten = (group: Group, name: string) =>
-    Object.values(db.days).reduce((n, day) => n + day[group].filter((item) => item.name === name).length, 0)
+  const counts = new Map<string, number>()
+  Object.values(db.days).flatMap(itemsOfDay).forEach(({ group, item }) => counts.set(`${group}:${item.name}`, (counts.get(`${group}:${item.name}`) ?? 0) + 1))
+  const eaten = (group: Group, name: string) => counts.get(`${group}:${name}`) ?? 0
 
   return (
     <div className="space-y-4">

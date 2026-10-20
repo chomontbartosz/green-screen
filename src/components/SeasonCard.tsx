@@ -3,7 +3,7 @@
 
 import { Check } from 'lucide-react'
 import { inSeason, monthName } from '../config/discover'
-import { GROUP_ORDER } from '../config/produce'
+import { itemsOfDay } from '../config/produce'
 import { useStore } from '../data/store'
 import { toKey } from '../lib/date'
 import { ProduceIcon } from './ProduceIcon'
@@ -17,7 +17,7 @@ export function SeasonCard({ month }: { month: Date }) {
   const eaten = new Set(
     Object.entries(db.days)
       .filter(([key]) => key.startsWith(prefix))
-      .flatMap(([, day]) => GROUP_ORDER.flatMap((g) => day[g].map((item) => item.name))),
+      .flatMap(([, day]) => itemsOfDay(day).map(({ item }) => item.name)),
   )
   const done = list.filter(({ produce }) => eaten.has(produce.name)).length
 

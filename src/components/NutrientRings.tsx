@@ -1,4 +1,4 @@
-// Wykres pierścieniowy: każdy wycinek to składnik, 0–5 wypełnionych pierścieni = ile go było w ostatnich 7 dniach.
+// Wykres pierścieniowy: każdy wycinek to składnik, 0–5 wypełnionych pierścieni = ile go było w ostatnich dniach (NUTRITION.windowDays).
 // Po najechaniu (lub stuknięciu) dymek podpowiada, co jeść. Obliczenia: config/nutrients.ts.
 
 import { useState } from 'react'

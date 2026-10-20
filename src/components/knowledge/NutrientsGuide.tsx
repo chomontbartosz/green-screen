@@ -1,14 +1,12 @@
 // Baza wiedzy → „Witaminy i minerały”: do czego służy każdy składnik i gdzie go najwięcej (dane: config/nutrients.ts).
 
 import { CHARTS, NUTRIENTS, NUTRITION, type Chart, type Nutrient } from '../../config/nutrients'
-import { GROUP_ORDER, PRODUCE } from '../../config/produce'
+import { ALL_PRODUCE } from '../../config/produce'
 import { ProduceIcon } from '../ProduceIcon'
-
-const ALL = GROUP_ORDER.flatMap((group) => PRODUCE[group].map((produce) => ({ group, produce })))
 
 /** 5 produktów z najwyższą zawartością składnika (co najmniej „średnio”). */
 const bestSources = (nutrient: Nutrient) =>
-  ALL.filter(({ produce }) => (produce.nutrients[nutrient] ?? 0) >= 3)
+  ALL_PRODUCE.filter(({ produce }) => (produce.nutrients[nutrient] ?? 0) >= 3)
     .sort((a, b) => (b.produce.nutrients[nutrient] ?? 0) - (a.produce.nutrients[nutrient] ?? 0))
     .slice(0, 5)
 

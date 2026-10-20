@@ -6,7 +6,7 @@
 import type { DayEntry, Days, Mode } from '../types'
 import { daysBetween, shiftKey, weekStart } from '../lib/date'
 import { COLOR_ORDER, dayColors } from './balance'
-import { findProduce, GROUP_ORDER, hasTag, PRODUCE } from './produce'
+import { ALL_PRODUCE, hasTag, itemsOfDay } from './produce'
 import { calculateScore, portions } from './scoring'
 
 export const STREAK = {
@@ -44,13 +44,12 @@ const SEASONS = [
 
 const keysOf = (days: Days) => Object.keys(days).sort()
 const monthOf = (key: string) => Number(key.slice(5, 7))
-const itemsOf = (day: DayEntry) => GROUP_ORDER.flatMap((group) => day[group].map((item) => ({ group, item })))
-const namesOf = (day: DayEntry) => itemsOf(day).map(({ item }) => item.name)
+const namesOf = (day: DayEntry) => itemsOfDay(day).map(({ item }) => item.name)
 const dayHas = (day: DayEntry, test: (name: string) => boolean) => namesOf(day).some(test)
-const exotic = GROUP_ORDER.flatMap((g) => PRODUCE[g].filter((p) => p.tags?.includes('egzotyczne')).map((p) => p.name))
-const allBuiltIn = GROUP_ORDER.flatMap((g) => PRODUCE[g].map((p) => p.name))
+const exotic = ALL_PRODUCE.filter(({ produce }) => produce.tags?.includes('egzotyczne')).map(({ produce }) => produce.name)
+const allBuiltIn = ALL_PRODUCE.map(({ produce }) => produce.name)
 
-const entries = (day?: DayEntry) => (day ? itemsOf(day).length : 0)
+const entries = (day?: DayEntry) => itemsOfDay(day).length
 
 /** Ile dni z rzędu (do dziś lub do wczoraj, jeśli dziś jeszcze nic nie ma) ma wpis. */
 export function streakLength(days: Days, today: string): number {
@@ -120,10 +119,10 @@ const seasonOf = (key: string, season: (typeof SEASONS)[number]) =>
   season.months.includes(monthOf(key)) ? `${Number(key.slice(0, 4)) + (monthOf(key) === 12 ? 1 : 0)}-${season.name}` : null
 
 const seasonalEaten = (day: DayEntry, month: number) =>
-  itemsOf(day).filter(({ group, item }) => findProduce(group, item.name)?.season.includes(month)).map(({ item }) => item.name)
+  itemsOfDay(day).filter(({ produce }) => produce?.season.includes(month)).map(({ item }) => item.name)
 
 const purplePortions = (day: DayEntry, mode: Mode) =>
-  itemsOf(day).reduce((sum, { group, item }) => sum + (findProduce(group, item.name)?.color === 'purple' ? portions([item], mode) : 0), 0)
+  itemsOfDay(day).reduce((sum, { item, produce }) => sum + (produce?.color === 'purple' ? portions([item], mode) : 0), 0)
 
 // --- odznaki ----------------------------------------------------------------
 
@@ -195,7 +194,7 @@ export const BADGES: Badge[] = [
   // tryb eksperta
   ...TIERS.precision.map((n, i) => ({
     icon: '⚖️', name: `Precyzja ${n}`, description: `${n} dni z wpisanymi gramami`, repeatable: false, level: i + 1,
-    dates: (days: Days) => cumulative(days, (k) => (itemsOf(days[k]).some(({ item }) => item.grams !== undefined) ? 1 : 0), n),
+    dates: (days: Days) => cumulative(days, (k) => (itemsOfDay(days[k]).some(({ item }) => item.grams !== undefined) ? 1 : 0), n),
   })),
 ]
 

@@ -11,7 +11,7 @@
 
 import type { Days, Mode } from '../types'
 import { pastKeys } from '../lib/date'
-import { GROUP_ORDER, PRODUCE } from './produce'
+import { ALL_PRODUCE, itemsOfDay } from './produce'
 import { portions, SCORING } from './scoring'
 
 export type Chart = 'vitamins' | 'minerals'
@@ -58,16 +58,14 @@ export const NUTRITION = {
 export type Coverage = { nutrient: Nutrient; rings: number; bestSources: string[] }
 
 /**
- * Ile pierścieni (0–5) dostaje każdy składnik w ostatnich 7 dniach (licząc z dzisiaj).
- * Punkt odniesienia = tydzień 5 + 5 z równą mieszanką wszystkich produktów z listy:
- *   pierścienie = 5 × (Twoja suma „poziom × porcje”) / (średni poziom produktu × 10 porcji × 7 dni).
+ * Ile pierścieni (0–5) dostaje każdy składnik w ostatnich `windowDays` dniach (licząc z dzisiaj).
+ * Punkt odniesienia = okres 5 + 5 z równą mieszanką wszystkich produktów z listy:
+ *   pierścienie = 5 × (Twoja suma „poziom × porcje”) / (średni poziom produktu × 10 porcji × liczba dni).
  * Wynik jest celowo przybliżony — ma pokazać kierunek, a nie dokładne miligramy.
  */
 export function nutrientCoverage(days: Days, today: string, mode: Mode): Coverage[] {
-  const all = GROUP_ORDER.flatMap((g) => PRODUCE[g])
-  const eaten = pastKeys(today, NUTRITION.windowDays).flatMap((key) =>
-    GROUP_ORDER.flatMap((g) => (days[key]?.[g] ?? []).map((item) => ({ item, produce: PRODUCE[g].find((p) => p.name === item.name) }))),
-  )
+  const all = ALL_PRODUCE.map(({ produce }) => produce)
+  const eaten = pastKeys(today, NUTRITION.windowDays).flatMap((key) => itemsOfDay(days[key]))
   const goalPortions = (SCORING.goal.vegetables + SCORING.goal.fruits) * NUTRITION.windowDays
 
   return (Object.keys(NUTRIENTS) as Nutrient[]).map((nutrient) => {

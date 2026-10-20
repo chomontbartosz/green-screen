@@ -140,7 +140,7 @@ Borówki i jeżyny mają te same antocyjany, więc są w jednej grupie. Liczy si
 
 | Chcę zmienić… | Plik |
 | --- | --- |
-| 🍎 **Listę owoców i warzyw** (kolejność tematyczna, popularne na górze listy wyboru `POPULAR`, kolory, znaczniki kiszonka/strączki/suszone/liściaste/egzotyczne, gramy porcji, sezon, ikonki, opisy, składniki) | [src/config/produce.ts](src/config/produce.ts) |
+| 🍎 **Listę owoców i warzyw** (kolejność tematyczna, popularne na górze listy wyboru `POPULAR`, kolory, znaczniki kiszonka/strączki/suszone/liściaste/egzotyczne, gramy porcji, sezon, ikonki, opisy, składniki; wspólne `ALL_PRODUCE` i `itemsOfDay`) | [src/config/produce.ts](src/config/produce.ts) |
 | 🧮 **Punktację** (cele 5 + 5, wagi, gramy na porcję, limit strączków, formuła) | [src/config/scoring.ts](src/config/scoring.ts) |
 | 📚 **Teksty Bazy wiedzy** (co się liczy, przechowywanie, mity, ciąża, podejście vs dieta) | [src/config/knowledge.ts](src/config/knowledge.ts) |
 | 🌈 **Kolory i balans** (grupy, minima tygodniowe, podpowiedzi) · 🔬 **lista badań naukowych** | [src/config/balance.ts](src/config/balance.ts) |
@@ -173,12 +173,13 @@ Borówki i jeżyny mają te same antocyjany, więc są w jednej grupie. Liczy si
 | **Kształt danych** (dzień, pozycja, ustawienia) | [src/types.ts](src/types.ts) |
 | **Zegar i zmiana dnia o północy** | [src/hooks/useClock.ts](src/hooks/useClock.ts) |
 | **Tryb testowy** (`?intro`, `?demo`, `?hour=`) | [src/lib/testParams.ts](src/lib/testParams.ts) |
-| **Daty** (klucze dni, formatowanie) | [src/lib/date.ts](src/lib/date.ts) |
+| **Daty** (klucze dni, formatowanie, nazwy miesięcy) | [src/lib/date.ts](src/lib/date.ts) |
 
 ### 📱 Ekrany
 
 | Ekran | Plik |
 | --- | --- |
+| Start aplikacji (podpięcie stanu i stylów) | [src/main.tsx](src/main.tsx) |
 | Układ, nagłówek, dolny pasek z „+” na środku | [src/App.tsx](src/App.tsx) |
 | 🏠 Start | [src/pages/StartPage.tsx](src/pages/StartPage.tsx) |
 | 👋 Intro + wybór trybu | [src/pages/IntroPage.tsx](src/pages/IntroPage.tsx) |
@@ -299,6 +300,7 @@ GitHub (kod) ──push──▶ Vercel (strona + /api) ──HTTPS──▶ bar
 | 🗄️ **Dane użytkownika jako JSON w MySQL** | Kolumna `data` trzyma cały obiekt z `types.ts`, zmiany nakłada `applyChanges` | Ten sam model danych na ekranie, w przeglądarce i w bazie, bez mapowania na wiele tabel |
 | 🔐 **Bezpieczeństwo kont** | bcrypt, podpisane ciasteczko HttpOnly (HMAC), blokada po 5 błędnych hasłach, tokeny do linków z maili, ta sama odpowiedź „Nie pamiętam hasła” dla istniejących i nieistniejących adresów | Standardowe minimum, bez zewnętrznych usług logowania |
 | 📦 **Paczkowanie zapisów** | `api.ts` łączy zmiany z 0,5 s w jeden `PATCH` (i wysyła resztę przy zamykaniu karty) | Wpisywanie gramów nie zalewa bazy zapytaniami |
+| 🧰 **Wspólni pomocnicy danych** | `ALL_PRODUCE` (wszystkie produkty z grupą) i `itemsOfDay` (pozycje dnia z produktem) w `produce.ts`, nazwy miesięcy w `lib/date.ts` | Każda funkcja (wynik, kolory, odznaki, wykresy, sezon, katalog) czyta dane tak samo, bez kopiowania pętli |
 | 🔁 **Wspólna zasada łączenia zmian** | `data/changes.ts` (pusta baza, `applyChanges`, `mergeChanges`) jest używane przez serwer i przez aplikację | Ekran od razu pokazuje dokładnie to, co zapisze serwer |
 | ⚡ **Autozapis optymistyczny** | `store.tsx` (React Context) najpierw aktualizuje ekran, potem zapisuje w przeglądarce albo wysyła `PATCH` | Brak przycisku „Zapisz”, a interfejs reaguje natychmiast |
 | 🧠 **React Context zamiast Redux** | Jeden `useStore()` z danymi, trybem i akcjami | Mała aplikacja, a dodatkowa biblioteka nic by nie dała |

@@ -24,4 +24,8 @@ export const pastKeys = (end: string, count: number) => Array.from({ length: cou
 export const formatLong = (key: string) =>
   fromKey(key).toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
 
+/** Skróty miesięcy (sty, lut…) i forma „w …” (w styczniu, w lutym…). Indeks 0 = styczeń. */
+export const MONTH_SHORT = ['sty', 'lut', 'mar', 'kwi', 'maj', 'cze', 'lip', 'sie', 'wrz', 'paź', 'lis', 'gru']
+export const MONTH_IN = ['styczniu', 'lutym', 'marcu', 'kwietniu', 'maju', 'czerwcu', 'lipcu', 'sierpniu', 'wrześniu', 'październiku', 'listopadzie', 'grudniu']
+
 export const formatMonth = (d: Date) => d.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })

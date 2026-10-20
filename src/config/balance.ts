@@ -11,7 +11,7 @@
 
 import type { DayEntry, Days, Group, Mode } from '../types'
 import { pastKeys, shiftKey } from '../lib/date'
-import { findProduce, GROUP_ORDER, PRODUCE } from './produce'
+import { ALL_PRODUCE, itemsOfDay } from './produce'
 import { portions } from './scoring'
 
 export type Color = 'green' | 'red' | 'orange' | 'purple' | 'white'
@@ -92,19 +92,19 @@ export const BALANCE = {
 
 /** Kolory zjedzone danego dnia (własne pozycje nie mają koloru). */
 export function dayColors(day: DayEntry): Set<Color> {
-  return new Set(GROUP_ORDER.flatMap((g) => day[g].flatMap((item) => findProduce(g, item.name)?.color ?? [])))
+  return new Set(itemsOfDay(day).flatMap(({ produce }) => produce?.color ?? []))
 }
 
 /** Podpowiedź: `color` = brakujący kolor (do ikonki), brak koloru = podpowiedź o różnorodności. */
 export type Tip = { title: string; text: string; color?: Color; suggestions: { group: Group; name: string }[] }
 
-/** Podpowiedzi na podstawie ostatnich 7 dni: najpierw kolory z największym brakiem, potem różnorodność. */
+/** Podpowiedzi na podstawie ostatnich `windowDays` dni: najpierw kolory z największym brakiem, potem różnorodność. */
 export function checkBalance(days: Days, today: string, mode: Mode): Tip[] {
   const logged = pastKeys(shiftKey(today, -1), BALANCE.windowDays).flatMap((key) => days[key] ?? [])
   if (logged.length < BALANCE.minLoggedDays) return []
 
-  const eaten = logged.flatMap((day) => GROUP_ORDER.flatMap((g) => day[g].map((item) => ({ item, color: findProduce(g, item.name)?.color }))))
-  const allProduce = GROUP_ORDER.flatMap((group) => PRODUCE[group].map((produce) => ({ group, produce })))
+  const eaten = logged.flatMap(itemsOfDay).map(({ item, produce }) => ({ item, color: produce?.color }))
+  const period = `W ostatnich ${BALANCE.windowDays} dniach`
 
   const colorTips: (Tip & { missing: number })[] = COLOR_ORDER.map((color) => {
     const { few, benefit, weeklyMin } = COLORS[color]
@@ -112,9 +112,9 @@ export function checkBalance(days: Days, today: string, mode: Mode): Tip[] {
     return {
       missing: 1 - have / weeklyMin,
       title: `Mało ${few} warzyw i owoców`,
-      text: `W ostatnich 7 dniach: ${Math.round(have)} z ${weeklyMin} porcji. Dodaj je — ${benefit}.`,
+      text: `${period}: ${Math.round(have)} z ${weeklyMin} porcji. Dodaj je — ${benefit}.`,
       color,
-      suggestions: allProduce.filter(({ produce }) => produce.color === color).slice(0, 5).map(({ group, produce }) => ({ group, name: produce.name })),
+      suggestions: ALL_PRODUCE.filter(({ produce }) => produce.color === color).slice(0, 5).map(({ group, produce }) => ({ group, name: produce.name })),
     }
   })
     .filter((tip) => tip.missing > 0)
@@ -123,7 +123,7 @@ export function checkBalance(days: Days, today: string, mode: Mode): Tip[] {
   const distinct = new Set(eaten.map((e) => e.item.name)).size
   const varietyTip: Tip[] =
     distinct < BALANCE.weeklyVariety
-      ? [{ title: 'Spróbuj czegoś nowego', text: `W ostatnich 7 dniach: ${distinct} z ${BALANCE.weeklyVariety} różnych warzyw i owoców. Różnorodność karmi dobre bakterie jelitowe.`, suggestions: [] }]
+      ? [{ title: 'Spróbuj czegoś nowego', text: `${period}: ${distinct} z ${BALANCE.weeklyVariety} różnych warzyw i owoców. Różnorodność karmi dobre bakterie jelitowe.`, suggestions: [] }]
       : []
 
   return [...colorTips, ...varietyTip].slice(0, BALANCE.maxTips)

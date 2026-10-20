@@ -5,7 +5,7 @@
 // Kiszonki: sezon jesień–wiosna, kiedy brakuje świeżych warzyw.
 // Własne pozycje użytkownika dostają szarą ikonkę.
 
-import type { Days, Group } from '../types'
+import type { DayEntry, Days, Group } from '../types'
 import type { Color } from './balance'
 import type { Level, Nutrient } from './nutrients'
 
@@ -129,6 +129,13 @@ export const PRODUCE: Record<Group, Produce[]> = {
 
 /** Znajduje produkt po nazwie. Brak wyniku = własna pozycja użytkownika. */
 export const findProduce = (group: Group, name: string) => PRODUCE[group].find((p) => p.name === name)
+
+/** Wszystkie produkty z listy razem z grupą (warzywa, potem owoce). */
+export const ALL_PRODUCE = GROUP_ORDER.flatMap((group) => PRODUCE[group].map((produce) => ({ group, produce })))
+
+/** Pozycje jednego dnia razem z grupą i produktem z listy (`produce` puste = własna pozycja). */
+export const itemsOfDay = (day: DayEntry | undefined) =>
+  day ? GROUP_ORDER.flatMap((group) => day[group].map((item) => ({ group, item, produce: findProduce(group, item.name) }))) : []
 
 /** Produkt po nazwie, bez względu na grupę. */
 export const findAny = (name: string) => GROUP_ORDER.map((g) => findProduce(g, name)).find(Boolean)
