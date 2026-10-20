@@ -87,7 +87,7 @@ export const BALANCE = {
   windowDays: 7, // analizujemy 7 pełnych dni przed dzisiaj
   minLoggedDays: 3, // podpowiedzi dopiero, gdy w tym czasie są co najmniej 3 dni z wpisami
   weeklyVariety: 15, // różnych warzyw i owoców w tygodniu (McDonald 2018: 30 roślin, wliczając zboża, orzechy i strączki)
-  maxTips: 2, // ile podpowiedzi pokazać naraz
+  maxTips: 3, // ile braków pokazać naraz (wiersze jednej karty)
 }
 
 /** Kolory zjedzone danego dnia (własne pozycje nie mają koloru). */

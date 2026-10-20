@@ -1,24 +1,45 @@
 // Katalog warzyw i owoców w Bazie wiedzy: odblokowane (zjedzone choć raz) w kolorze, pozostałe wyszarzone.
-// Każdy produkt można otworzyć i poczytać o nim — także te jeszcze nieodblokowane.
+// Każdy produkt można otworzyć i poczytać o nim — także te jeszcze nieodblokowane. Sortowanie: tematycznie, A–Z, kolorami.
 
 import { Lock } from 'lucide-react'
 import { useState } from 'react'
-import { GROUP_ORDER, GROUPS, PRODUCE } from '../config/produce'
+import { COLOR_ORDER } from '../config/balance'
+import { GROUP_ORDER, GROUPS, PRODUCE, type Produce } from '../config/produce'
 import { useStore } from '../data/store'
 import type { Group } from '../types'
 import { Modal } from './Modal'
 import { ProduceImage } from './ProduceIcon'
 import { ProduceInfo } from './ProduceInfo'
 
+const SORTS = {
+  default: { label: 'Domyślnie', sort: (list: Produce[]) => list }, // tematycznie, jak w config/produce.ts
+  alpha: { label: 'A–Z', sort: (list: Produce[]) => [...list].sort((a, b) => a.name.localeCompare(b.name, 'pl')) },
+  color: { label: 'Kolorami', sort: (list: Produce[]) => [...list].sort((a, b) => COLOR_ORDER.indexOf(a.color) - COLOR_ORDER.indexOf(b.color)) },
+}
+type Sort = keyof typeof SORTS
+
 export function ProduceCatalog() {
   const { db } = useStore()
   const [selected, setSelected] = useState<{ group: Group; name: string } | null>(null)
+  const [sort, setSort] = useState<Sort>('default')
 
   const eaten = (group: Group, name: string) =>
     Object.values(db.days).reduce((n, day) => n + day[group].filter((item) => item.name === name).length, 0)
 
   return (
     <div className="space-y-4">
+      <div className="flex gap-1 rounded-full bg-white p-1 shadow-sm" role="group" aria-label="Sortowanie">
+        {(Object.keys(SORTS) as Sort[]).map((key) => (
+          <button
+            key={key}
+            onClick={() => setSort(key)}
+            aria-pressed={sort === key}
+            className={`flex-1 rounded-full py-1.5 text-sm font-semibold ${sort === key ? 'bg-black text-white' : 'text-stone-600 hover:bg-stone-100'}`}
+          >
+            {SORTS[key].label}
+          </button>
+        ))}
+      </div>
       {GROUP_ORDER.map((group) => {
         const unlocked = PRODUCE[group].filter((p) => eaten(group, p.name) > 0).length
         return (
@@ -30,7 +51,7 @@ export function ProduceCatalog() {
               </span>
             </header>
             <ul className="grid grid-cols-4 gap-2">
-              {PRODUCE[group].map((p) => {
+              {SORTS[sort].sort(PRODUCE[group]).map((p) => {
                 const count = eaten(group, p.name)
                 return (
                   <li key={p.name}>

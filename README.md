@@ -50,11 +50,11 @@ Prosty dziennik warzyw i owoców. Zamiast ważyć jedzenie i liczyć kalorie, od
 | --- | --- |
 | 👋 **Intro** | Przy pierwszym uruchomieniu: koncepcja, zasady, zdjęcia porcji i wybór trybu |
 | 🏠 **Start** | Pierwszy ekran: baner danych demo, wykresy pierścieniowe witamin i minerałów z 7 dni, zielona karta „Dziś na talerzu” z przyciskiem „Dodaj więcej”, tabela dni z ikonkami (od pierwszej wizyty, bez starych pustych dni) |
-| ➕ **Dziś** (czarny „+” na środku paska) | Wybór warzyw i owoców (lista z wyszukiwaniem, własne pozycje z „×”), autozapis, wynik 0–100, kolory dnia, seria 🔥, wieczorne przypomnienie ⏰, podpowiedzi balansu (kropka w brakującym kolorze + przykładowe produkty), dyskretny link „Jak to działa?” przy „+”, karuzela „Odkryj coś nowego” ✨, „Cofnij” po usunięciu, nagroda za 100 pkt 🎉 |
-| 📅 **Kalendarz** | Miesiąc z porcjami i kolorem wyniku każdego dnia, podgląd i edycja dni z przeszłości, „W sezonie” 🗓️ dla oglądanego miesiąca |
-| 🏆 **Odznaki** | Seria dni z rzędu i 10 odznak; wielokrotne z licznikiem (×2, ×10…), ostatnio zdobyta na początku |
+| ➕ **Dziś** (czarny „+” na środku paska) | Wybór warzyw i owoców (lista z wyszukiwaniem — najpierw najpopularniejsze — i własnymi pozycjami z „×”), autozapis, wynik 0–100, kolory dnia, seria 🔥, wieczorne przypomnienie ⏰, jedna karta „Uzupełnij w tym tygodniu” (do 3 braków: kropka w brakującym kolorze + przykładowe produkty), dyskretny link „Jak to działa?” przy „+”, karuzela „Odkryj coś nowego” ✨, „Cofnij” po usunięciu, nagroda za 100 pkt 🎉 |
+| 📅 **Kalendarz** | Miesiąc z porcjami i kolorem wyniku każdego dnia, podgląd i edycja dni z przeszłości, „W sezonie” 🗓️ dla oglądanego miesiąca z zielonym ✓ przy produktach zjedzonych w tym miesiącu |
+| 🏆 **Odznaki** | Seria dni z rzędu i 36 odznak (część w kilku poziomach ★, każdy poziom to osobna odznaka); wielokrotne z licznikiem (×2, ×10…), ostatnio zdobyta na początku |
 | 👤 **Konto** (nagłówek) | Gość dostaje losową nazwę (np. `user12213654`) i od razu korzysta; codzienny baner „Nie strać swoich danych” (z „×”); rejestracja (e-mail + hasło 2×), logowanie, „Nie pamiętam hasła”, mail powitalny z potwierdzeniem adresu; na intro link „Masz już konto? Zaloguj się” |
-| 📚 **Baza wiedzy** | Lista tematów, każdy na osobnym ekranie ze strzałką powrotu: Warzywa i owoce (odblokowane w kolorze, reszta wyszarzona, ale z pełnym opisem) · Co się liczy, a co nie · Kolory · Witaminy i minerały · Jak przechowywać i przygotowywać · Mity i fakty · Kobieta w ciąży 🤰 · Nasze podejście vs dieta (z zastrzeżeniem „szacunki, nie diagnoza”) · Jak to działa? |
+| 📚 **Baza wiedzy** | Lista tematów, każdy na osobnym ekranie ze strzałką powrotu: Warzywa i owoce (odblokowane w kolorze, reszta wyszarzona, ale z pełnym opisem; sortowanie: domyślnie, A–Z, kolorami) · Co się liczy, a co nie · Kolory · Witaminy i minerały · Jak przechowywać i przygotowywać · Mity i fakty · Kobieta w ciąży 🤰 · Nasze podejście vs dieta (z zastrzeżeniem „szacunki, nie diagnoza”) · Jak to działa? |
 
 Na każdej ikonce produktu jest dymek: duża miniatura, kolor, jedno zdanie „dlaczego warto” i składniki w skali 1–5.
 
@@ -87,7 +87,25 @@ Borówki i jeżyny mają te same antocyjany, więc są w jednej grupie. Liczy si
 
 **🔬 Składniki** (wykresy na ekranie „Start”), opis w [src/config/nutrients.ts](src/config/nutrients.ts): każdy produkt ma orientacyjną zawartość 13 składników w skali 1–5. Wykresy liczą **ostatnie 7 dni**, bo normy dzienne to średnie, a nie każdy składnik musi być codziennie. 5 pierścieni = tyle, ile dałby tydzień 5 + 5 z równą mieszanką wszystkich produktów. To szacunek pokazujący kierunek, nie pomiar.
 
-**🔥 Seria i 🏆 odznaki**, w [src/config/achievements.ts](src/config/achievements.ts): dzień liczy się do serii od 60 pkt. Odznak jest 10, np. „Tęcza” (5 kolorów jednego dnia), „Moc kiszonek” 🥒 (kiszonki w 3 dni jednego tygodnia) albo „Kolekcjoner” (wszystkie 71 produktów). Odznaki wielokrotne (np. „Setka”, „Tęcza”, serie) mają licznik ×N, a na początku listy jest zawsze ostatnio zdobyta.
+**🔥 Seria i 🏆 odznaki**, w [src/config/achievements.ts](src/config/achievements.ts): seria to dni z rzędu z co najmniej 1 wpisem (dziś bez wpisu nie przerywa serii do wczoraj). Odznaki z poziomami to osobne odznaki — każdy próg zdobywa się oddzielnie (progi w `TIERS`):
+
+| Odznaka | Za co | Poziomy / powtarzanie |
+| --- | --- | --- |
+| 🌱 Pierwszy krok | pierwszy zapisany dzień | — |
+| 💯 Setka · Setka ×N | dzień ze 100 pkt · łącznie N takich dni | ×N · 10 / 50 / 100 |
+| 👑 Perfekcyjny tydzień | 7 dni z rzędu od 90 pkt | ×N |
+| 🔥 Serie | dni z rzędu z wpisem | 3 / 7 / 30 / 100 / 365 |
+| 🔄 Powrót | wpis po co najmniej 3 dniach przerwy | ×N |
+| 🌈 Tęcza · Tęczowy tydzień | 5 kolorów jednego dnia · przez 7 dni z rzędu | ×N |
+| 🟣 Fioletowa moc | porcje fioletowych w jednym miesiącu | 10 / 25 / 50, co miesiąc |
+| 🥬 Zielona dziesiątka / trzydziestka | liściaste (znacznik `liściaste`) dni z rzędu | 10 / 30 |
+| 🥒 Moc kiszonek · 🫘 Strączkowy tydzień | kiszonki / strączki w 3 dni tygodnia | ×N |
+| 🌸☀️🍂❄️ Sezonowiec | 10 różnych produktów w sezonie w trakcie pory roku | 4 pory roku, co rok |
+| 🍓 Polskie lato | truskawki, czereśnie, maliny, borówki i porzeczki jednego lata | co rok |
+| 🧭 Odkrywca | różne warzywa i owoce łącznie | 10 / 20 / 40 / 60 |
+| 🌴 Podróżnik | różne owoce egzotyczne (znacznik `egzotyczne`) | 5 / 10 |
+| 🎒 Kolekcjoner | wszystkie 73 produkty z listy | — |
+| ⚖️ Precyzja | dni z wpisanymi gramami (tryb eksperta) | 7 / 30 / 100 |
 
 ---
 
@@ -118,16 +136,16 @@ Borówki i jeżyny mają te same antocyjany, więc są w jednej grupie. Liczy si
 
 > 🌉 **Ta sekcja łączy koncepcję z kodem.** Każda zasada z sekcji powyżej ma dokładnie jedno miejsce w kodzie, bez duplikatów.
 
-### ⚙️ Ustawienia i treści (tu zmieniasz zasady bez znajomości Reacta)
+### ⚙️ Ustawienia i treści (sekcja dla osób nietechnicznych)
 
 | Chcę zmienić… | Plik |
 | --- | --- |
-| 🍎 **Listę owoców i warzyw** (kolejność tematyczna, kolory, znaczniki kiszonka/strączki/suszone, gramy porcji, sezon, ikonki, opisy, składniki) | [src/config/produce.ts](src/config/produce.ts) |
+| 🍎 **Listę owoców i warzyw** (kolejność tematyczna, popularne na górze listy wyboru `POPULAR`, kolory, znaczniki kiszonka/strączki/suszone/liściaste/egzotyczne, gramy porcji, sezon, ikonki, opisy, składniki) | [src/config/produce.ts](src/config/produce.ts) |
 | 🧮 **Punktację** (cele 5 + 5, wagi, gramy na porcję, limit strączków, formuła) | [src/config/scoring.ts](src/config/scoring.ts) |
 | 📚 **Teksty Bazy wiedzy** (co się liczy, przechowywanie, mity, ciąża, podejście vs dieta) | [src/config/knowledge.ts](src/config/knowledge.ts) |
 | 🌈 **Kolory i balans** (grupy, minima tygodniowe, podpowiedzi) · 🔬 **lista badań naukowych** | [src/config/balance.ts](src/config/balance.ts) |
 | 🔬 **Witaminy i minerały** (nazwy, skala 1–5, wykresy z 7 dni) | [src/config/nutrients.ts](src/config/nutrients.ts) |
-| 🏆 **Serie i odznaki** | [src/config/achievements.ts](src/config/achievements.ts) |
+| 🏆 **Serie i odznaki** (progi poziomów `TIERS`, zasady `RULES`) | [src/config/achievements.ts](src/config/achievements.ts) |
 | ✨ **„Odkryj coś nowego” (liczba propozycji) i sezonowość** | [src/config/discover.ts](src/config/discover.ts) |
 | ⏰ **Przypomnienie** (godzina, treść) | [src/config/reminders.ts](src/config/reminders.ts) |
 | ✍️ **Teksty** (nazwa, hasło, intro, „Jak to działa?”, tryby, baner demo, konto) | [src/config/texts.ts](src/config/texts.ts) |
@@ -177,7 +195,7 @@ Borówki i jeżyny mają te same antocyjany, więc są w jednej grupie. Liczy si
 | Ekrany Bazy wiedzy (kolory, witaminy, co się liczy, przechowywanie, mity, ciąża, podejście) + wspólne karty porad i ramka zastrzeżenia | [src/components/knowledge/](src/components/knowledge/) |
 | Karta „Dziś na talerzu” na Starcie | [TodayProgress.tsx](src/components/TodayProgress.tsx) |
 | Okno modalne · dymek „i” z badaniem | [Modal.tsx](src/components/Modal.tsx) · [InfoTip.tsx](src/components/InfoTip.tsx) |
-| Katalog warzyw i owoców (Baza wiedzy) · opis produktu (dymek i katalog) | [ProduceCatalog.tsx](src/components/ProduceCatalog.tsx) · [ProduceInfo.tsx](src/components/ProduceInfo.tsx) |
+| Katalog warzyw i owoców z sortowaniem (Baza wiedzy) · opis produktu (dymek i katalog) | [ProduceCatalog.tsx](src/components/ProduceCatalog.tsx) · [ProduceInfo.tsx](src/components/ProduceInfo.tsx) |
 | Edycja dnia · grupa z „+”, gramami i „Cofnij” | [DayEditor.tsx](src/components/DayEditor.tsx) · [GroupSection.tsx](src/components/GroupSection.tsx) |
 | Lista z wyszukiwaniem, „+ Dodaj …” i „×” przy własnych pozycjach | [ProduceSelect.tsx](src/components/ProduceSelect.tsx) |
 | Ikonka produktu · dymek z witaminami | [ProduceIcon.tsx](src/components/ProduceIcon.tsx) · [ProduceTooltip.tsx](src/components/ProduceTooltip.tsx) |
@@ -321,6 +339,7 @@ GitHub (kod) ──push──▶ Vercel (strona + /api) ──HTTPS──▶ bar
 - [x] Ekran Start z „+” na środku paska, osobne Odznaki, 8 tematów Bazy wiedzy, odznaka za kiszonki, strączki i nowe warzywa, karuzela propozycji
 - [x] 16 nowych owoców (m.in. porzeczki, aronia, suszone z porcją 30 g), winogrona ciemne i jasne, sezon w kalendarzu
 - [x] 🌐 Tryb gościa, konta (MySQL na home.pl przez most PHP po HTTPS), maile, wersja online na Vercelu
+- [x] 🏆 36 odznak z poziomami, ikony wszystkich 73 produktów, popularne na górze listy, sortowanie katalogu, ✓ przy sezonowych
 
 **🔜 Dalej**
 
@@ -331,5 +350,4 @@ GitHub (kod) ──push──▶ Vercel (strona + /api) ──HTTPS──▶ bar
 - [ ] 🐟 Nowe kategorie: ryby, mięso, jajka, zdrowe tłuszcze, zdrowe węglowodany, woda
 - [ ] 🍕 Kategoria „ograniczaj”: fast food, białe pieczywo, pizza, tosty, słodkie napoje (odejmuje punkty)
 - [ ] 🗑️ Usuwanie danych demo jednym kliknięciem
-- [ ] 🖼️ Ikony dla 31 nowych produktów (nazwy plików `41_…`–`71_…` są już w `produce.ts`)
 - [ ] ➕ Piąta zakładka w dolnym pasku (pomysł do ustalenia)

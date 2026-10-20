@@ -7,7 +7,7 @@ import { fromKey } from '../lib/date'
 
 export function Badges({ today }: { today: string }) {
   const { db, mode } = useStore()
-  const streak = streakLength(db.days, today, mode)
+  const streak = streakLength(db.days, today)
   const badges = badgeStatus(db.days, mode)
   const earned = badges.filter((b) => b.count > 0)
 
@@ -21,7 +21,7 @@ export function Badges({ today }: { today: string }) {
           <h2 className="text-lg font-semibold">
             Seria: {streak} {streak === 1 ? 'dzień' : 'dni'} z rzędu
           </h2>
-          <p className="text-xs text-stone-500">Dzień liczy się do serii od {STREAK.minScore} pkt. Nie przerwij jej!</p>
+          <p className="text-xs text-stone-500">Każdy dzień z co najmniej {STREAK.minEntries} wpisem przedłuża serię. Nie przerwij jej!</p>
         </div>
       </section>
 
@@ -44,10 +44,15 @@ export function Badges({ today }: { today: string }) {
                 title={last ? `${badge.description} · ostatnio ${last}` : badge.description}
                 className={`relative rounded-xl p-2 text-center ${has ? 'bg-brand-soft' : 'bg-stone-50 opacity-50 grayscale'}`}
               >
+                {badge.level && (
+                  <span className="absolute top-1 left-1 rounded-full bg-amber-100 px-1.5 text-[10px] font-bold text-amber-800" title={`Poziom ${badge.level}`}>
+                    {'★'.repeat(badge.level)}
+                  </span>
+                )}
                 {badge.repeatable && badge.count > 1 && (
                   <span className="absolute top-1 right-1 rounded-full bg-black px-1.5 text-[10px] font-bold text-white">×{badge.count}</span>
                 )}
-                <span className="block text-2xl">{badge.icon}</span>
+                <span className="mt-2 block text-2xl">{badge.icon}</span>
                 <span className="block text-xs font-semibold">{badge.name}</span>
                 <span className="block text-[10px] leading-tight text-stone-500">{badge.description}</span>
               </li>
